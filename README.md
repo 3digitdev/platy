@@ -1,2 +1,2 @@
-# platy
-Twitter-ish clone with opinions
+# Platy
+_Twitter-ish clone with opinions_
