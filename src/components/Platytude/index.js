@@ -22,7 +22,7 @@ class Platytude extends Component {
         <div className='tile__container'>
           <p className='tile__title u-no-margin'>{`${this.props.sender} says...`}</p>
           <p className='tile_subtitle u-no-margin'>{`"${this.props.text}"`}</p>
-          <span className='info'>{'When they felt like it'}</span>
+          <span className='info'><strong>{'Posted:  '}</strong><em>{'When they felt like it'}</em></span>
         </div>
         <p className='u-no-margin'>
           <Button extraClass='inline' btnClass='btn-tiny plat-btn' text='Yup'/>
