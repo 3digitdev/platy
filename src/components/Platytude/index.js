@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Button from '../Button';
+import platypus from '../../platypus.svg';
 import './Platytude.css';
 
 class Platytude extends Component {
@@ -11,11 +13,22 @@ class Platytude extends Component {
 
   render() {
     return (
-      <div className='Platytude'>
-        <h4 className='sender'>{`${this.props.sender} says...`}</h4>
-        <div className='platy-txt'>
-          <p className='inline'>{`"${this.props.text}"`}</p>
+      <div className='Platytude tile'>
+        <div className='tile__icon'>
+          <figure className='avatar'>
+            <img src={platypus} alt="Platypus avatar"/>
+          </figure>
         </div>
+        <div className='tile__container'>
+          <p className='tile__title u-no-margin'>{`${this.props.sender} says...`}</p>
+          <p className='tile_subtitle u-no-margin'>{`"${this.props.text}"`}</p>
+          <span className='info'>{'When they felt like it'}</span>
+        </div>
+        <p className='u-no-margin'>
+          <Button extraClass='inline' btnClass='btn-tiny plat-btn' text='Yup'/>
+          <Button extraClass='inline' btnClass='btn-tiny plat-btn' text='Huh'/>
+          <Button extraClass='inline' btnClass='btn-tiny plat-btn' text='Right?'/>
+        </p>
       </div>
     );
   }

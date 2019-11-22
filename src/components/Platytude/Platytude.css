@@ -9,12 +9,15 @@
     display: inline;
 }
 
-.sender {
-    margin-right: 1rem;
-    width: 100%;
-    text-align: left;
+.avatar {
+    background-color: transparent;
 }
 
-.platy-txt {
-    text-align: left;
+.plat-btn {
+    width: 100%;
+    padding: 0.2rem 0 0.2rem 0;
+}
+
+.info {
+    float: bottom;
 }

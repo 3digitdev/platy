@@ -12,7 +12,7 @@ class Button extends Component {
   render() {
     return (
       <div className={`Button ${this.props.extraClass}`}>
-        <button className='btn btn--pilled'>
+        <button className={`btn btn--pilled ${this.props.btnClass}`}>
           <h6>{this.props.text}</h6>
         </button>
       </div>
