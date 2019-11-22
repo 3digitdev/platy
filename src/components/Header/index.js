@@ -19,7 +19,9 @@ class Header extends Component {
           <div className="app-name">
             <h3>Platy</h3>
           </div>
-          <Button extraClass="add-btn" text="Add a 'tude" />
+          <a className='add-btn' href='#AddPlatytudeModal'>
+            <Button text="Add a 'tude" />
+          </a>
         </div>
       </div>
     );

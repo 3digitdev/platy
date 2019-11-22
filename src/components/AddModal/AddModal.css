@@ -1,0 +1,43 @@
+.modal-content {
+    background-color: #282c34;
+    border: 4px solid #cc5500;
+    border-radius: 10% 10% 85% 85%;
+    color: white;
+}
+
+.modal-content h6 {
+    color: #cc5500;
+}
+
+.fa-times {
+    color: #cc5500;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: center;
+}
+
+.platytude-input {
+    color: white;
+    background-color: #282c34;
+}
+
+textarea[type=text] {
+    border: 1px solid #cc5500;
+}
+
+button.btn--pilled {
+    color: #cc5500;
+    background-color: #282c34;
+    border-color: #cc5500;
+    font-weight: bold;
+    border-width: 2px;
+}
+
+button.btn--pilled:hover {
+    background-color: #cc5500;
+    color: #282c34;
+    border-color: #cc5500;
+    border-width: 2px;
+}

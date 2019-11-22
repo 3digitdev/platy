@@ -14,7 +14,7 @@ class Platytude extends Component {
   render() {
     return (
       <div className='Platytude tile'>
-        <div className='tile__icon'>
+        <div className='tile__icon u-hide-mobile'>
           <figure className='avatar avatar--large'>
             <img src={platypus} alt="Platypus avatar"/>
           </figure>
@@ -24,11 +24,11 @@ class Platytude extends Component {
           <p className='tile_subtitle u-no-margin'>{`"${this.props.text}"`}</p>
           <span className='info'><strong>{'Posted:  '}</strong><em>{'When they felt like it'}</em></span>
         </div>
-        <p className='u-no-margin'>
+        <span className='u-no-margin'>
           <Button extraClass='inline' btnClass='btn-tiny plat-btn' text='Yup'/>
           <Button extraClass='inline' btnClass='btn-tiny plat-btn' text='Huh'/>
           <Button extraClass='inline' btnClass='btn-tiny plat-btn' text='Right?'/>
-        </p>
+        </span>
       </div>
     );
   }

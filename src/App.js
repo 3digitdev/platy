@@ -1,6 +1,7 @@
 import React from 'react';
-import PlatyList from './components/PlatyList';
 import Header from './components/Header'
+import PlatyList from './components/PlatyList';
+import AddModal from './components/AddModal';
 import './App.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
   ]
   return (
     <div className="App">
+      <AddModal />
       <Header />
       <div className="row">
         <PlatyList platys={platyList}/>
