@@ -15,7 +15,7 @@ class Platytude extends Component {
     return (
       <div className='Platytude tile'>
         <div className='tile__icon'>
-          <figure className='avatar'>
+          <figure className='avatar avatar--large'>
             <img src={platypus} alt="Platypus avatar"/>
           </figure>
         </div>
