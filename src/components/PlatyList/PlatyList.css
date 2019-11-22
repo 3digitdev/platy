@@ -1,0 +1,10 @@
+.PlatyList {
+}
+
+.row {
+    min-width: 80%;
+}
+
+.row [class *= 'PlatyList'] {
+    padding: 1rem;
+}

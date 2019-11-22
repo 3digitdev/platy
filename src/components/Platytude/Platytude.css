@@ -1,0 +1,20 @@
+.Platytude {
+    border: 1px solid #cc5500;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inline {
+    display: inline;
+}
+
+.sender {
+    margin-right: 1rem;
+    width: 100%;
+    text-align: left;
+}
+
+.platy-txt {
+    text-align: left;
+}
