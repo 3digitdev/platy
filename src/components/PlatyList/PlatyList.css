@@ -8,3 +8,19 @@
 .row [class *= 'PlatyList'] {
     padding: 1rem;
 }
+
+.row > .filter {
+    padding-left: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 55px;
+}
+
+.filter-txt {
+    margin: 0 0.5rem 0 1rem;
+}
+
+.clear-btn-wrap {
+    margin-left: auto;
+}

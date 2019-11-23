@@ -6,9 +6,7 @@ import './Platytude.css';
 class Platytude extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      value: null,
-    };
+    this.state = {};
   }
 
   render() {
@@ -20,7 +18,10 @@ class Platytude extends Component {
           </figure>
         </div>
         <div className='tile__container'>
-          <p className='tile__title u-no-margin'>{`${this.props.sender} says...`}</p>
+          <h6 className="inline" onClick={this.props.setFilterCb}>
+            {this.props.sender}
+          </h6>
+            <p className='tile__title u-no-margin inline'>{` says...`}</p>
           <p className='tile_subtitle u-no-margin'>{`"${this.props.text}"`}</p>
           <span className='info'><strong>{'Posted:  '}</strong><em>{'When they felt like it'}</em></span>
         </div>

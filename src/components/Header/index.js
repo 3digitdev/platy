@@ -7,8 +7,11 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: null,
     };
+  }
+
+  clearFilter() {
+    this.props.clearFilterCb();
   }
 
   render() {
@@ -19,6 +22,7 @@ class Header extends Component {
           <div className="app-name">
             <h3>Platy</h3>
           </div>
+          <div className="filter"><h6>{this.state.filterName}</h6></div>
           <a className='add-btn' href='#AddPlatytudeModal'>
             <Button text="Add a 'tude" />
           </a>

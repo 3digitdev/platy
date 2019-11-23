@@ -21,3 +21,11 @@
 .info {
     float: bottom;
 }
+
+.name-btn {
+    border: 0;
+    border-bottom: 1px dotted #cc5500;
+    color: #cc5500;
+    background-color: transparent;
+
+}

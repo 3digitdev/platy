@@ -29,7 +29,13 @@ class AddModal extends Component {
         <form onSubmit={this.handleSubmit}>
           <div className="modal-body">
             <div className="input-control">
-              <textarea className="platytude-input" type="text" id="inp" name="platytude" placeholder="&nbsp;" />
+              <label className="inline" for="p-platytude">{'Name:'}</label>
+              <input className="name-input" id="p-name" type="text" name="name" placeholder="&nbsp;" />
+              <span className="border"></span>
+            </div>
+            <div className="input-control">
+              <label for="p-platytude">{'Platytude:'}</label>
+              <textarea className="platytude-input" id="p-platytude" name="platytude" placeholder="&nbsp;" />
               <span className="border"></span>
             </div>
           </div>

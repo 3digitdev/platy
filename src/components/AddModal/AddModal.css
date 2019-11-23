@@ -23,6 +23,12 @@
     background-color: #282c34;
 }
 
+input:not([type=checkbox]):not([type=radio]):not([type=submit]).name-input {
+    color: white;
+    background-color: #282c34;
+    width: 75%;
+}
+
 textarea[type=text] {
     border: 1px solid #cc5500;
 }
