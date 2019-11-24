@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Fetch } from 'react-request';
+import Composer from 'react-composer';
 import platypus from '../../platypus.svg';
 import './Platytude.css';
 
@@ -6,41 +8,29 @@ import './Platytude.css';
 
 const randomIndex = (text, skipIdx = -1) => {
   let randIdx = -1;
-  const alphaReg = /[A-Za-z]/;
+  const alphaReg = /[^A-Za-z]/;
   do {
     randIdx = Math.floor(Math.random() * text.length);
   } while (randIdx === skipIdx || alphaReg.test(text[randIdx]) || text[randIdx] === text[skipIdx]);
   return randIdx;
 };
 
-const xformIndices = text => {
+const transpose = (text, firstIdx, secondIdx) => {
   const first = randomIndex(text);
   const second = randomIndex(text, first);
-  return (first < second) ? [first, second] : [second, first];
+  [ firstIdx, secondIdx ] = (first < second) ? [first, second] : [second, first];
+  let firstChar = text[firstIdx];
+  let secondChar = text[secondIdx];
+  if (firstIdx === 0) {
+    firstChar = firstChar.toLowerCase();
+    secondChar = secondChar.toUpperCase();
+  }
+  return text.slice(0, firstIdx) +
+         secondChar +
+         text.slice(firstIdx + 1, secondIdx) +
+         firstChar +
+         text.slice(secondIdx + 1, text.length);
 };
-
-const transpose = (text, firstIdx, secondIdx) => (
-  text.slice(firstIdx) +
-  text[secondIdx] +
-  text.slice(firstIdx + 1, secondIdx) +
-  text[firstIdx] +
-  text.slice(secondIdx + 1, text.length)
-);
-
-// REST calls
-
-const getPlatytude = id => {
-  // TODO
-};
-
-const updatePlatytude = (id, mod) => {
-  // TODO
-};
-
-const createPlatytude = (sender, plat_text) => {
-  const plat = { sender, plat_text, score: 0, xforms: [] };
-  // TODO
-}
 
 // MAIN STUFF
 
@@ -48,43 +38,24 @@ class Platytude extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      key: props.key
+      data: props.platytude
     };
     this.transposePlatytude = this.transposePlatytude.bind(this);
     this.incrementScore = this.incrementScore.bind(this);
     this.resetPlatytude = this.resetPlatytude.bind(this);
   }
 
-  transposePlatytude(id) {
-    const plat = getPlatytude(id);
-    const text = plat.plat_text;
-    const [first, second] = xformIndices(text);
-    const plat_text = transpose(text, first, second);
-    const mod = { plat_text, xforms: plat.xforms.push([first, second]) };
-    console.log(JSON.stringify(mod));
-    updatePlatytude(id, mod);
+  transposePlatytude(platytude) {
+    const plat_text = transpose(platytude.plat_text)
+    return { plat_text };
   }
 
-  incrementScore(id) {
-    const plat = getPlatytude(id);
-    if (plat.score < 17) {
-      const mod = { score: plat.score + 1 };
-      console.log(JSON.stringify(mod));
-      updatePlatytude(id, mod);
-    }
+  incrementScore(platytude) {
+    return (platytude.score < 17) ? { score: platytude.score + 1 } : {}
   }
 
-  resetPlatytude(id) {
-    const plat = getPlatytude(id);
-    let resetTxt = plat.plat_text;
-    resetTxt = plat.xforms.reduce((acc, cur) => {
-      const [first, second] = cur;
-      acc = transpose(acc, first, second);
-      return acc;
-    }, resetTxt);
-    const mod = { score: 0, plat_text: resetTxt, xforms: [] };
-    console.log(JSON.stringify(mod));
-    updatePlatytude(id, mod);
+  resetPlatytude(platytude) {
+    return { score: 0, plat_text: platytude.original_text };
   }
 
   render() {
@@ -97,22 +68,73 @@ class Platytude extends Component {
         </div>
         <div className='tile__container'>
           <h6 className="inline" onClick={this.props.setFilterCb}>
-            {this.props.sender}
+            {this.state.data.sender}
           </h6>
-            <p className='tile__title u-no-margin inline'>{` says...${(new Array(this.props.score)).fill('.').join('')}`}</p>
-          <p className='tile_subtitle u-no-margin'>{`"${this.props.text}"`}</p>
+            <p className='tile__title u-no-margin inline'>{` says...${(new Array(this.state.data.score)).fill('.').join('')}`}</p>
+          <p className='tile_subtitle u-no-margin'>{`"${this.state.data.plat_text}"`}</p>
           <span className='info'><strong>{'Posted:  '}</strong><em>{'When they felt like it'}</em></span>
         </div>
         <span className='u-no-margin'>
-          <button className='btn btn--pilled btn-tiny plat-btn' onClick={() => this.transposePlatytude(this.props.key)}>
-            <h6>{'Yup!'}</h6>
-          </button>
-          <button className='btn btn--pilled btn-tiny plat-btn' onClick={() => this.incrementScore(this.props.key)}>
-            <h6>{'Huh.'}</h6>
-          </button>
-          <button className='btn btn--pilled btn-tiny plat-btn' onClick={() => this.resetPlatytude(this.props.key)}>
-            <h6>{'Why?'}</h6>
-          </button>
+          <Fetch
+            url={`http://localhost:5000/platytude/${this.state.data.id}`}
+            method="PUT"
+            headers={{ 'Content-Type': 'application/json' }}>
+            {({ fetching, failed, doFetch }) =>
+              <button
+                className='btn btn--pilled btn-tiny plat-btn'
+                onClick={() => {
+                  const body = JSON.stringify(this.transposePlatytude(this.state.data));
+                  doFetch({ body }).then(after =>
+                    this.setState(prev => {
+                      return after;
+                    })
+                  );
+                  this.forceUpdate();
+                }}>
+                <h6>{'Yup!'}</h6>
+              </button>
+            }
+          </Fetch>
+          <Fetch
+            url={`http://localhost:5000/platytude/${this.state.data.id}`}
+            method="PUT"
+            headers={{ 'Content-Type': 'application/json' }}>
+            {({ fetching, failed, doFetch }) => (
+              <button
+                className='btn btn--pilled btn-tiny plat-btn'
+                onClick={() => {
+                  const body = JSON.stringify(this.incrementScore(this.state.data));
+                  doFetch({ body }).then(after =>
+                    this.setState(prev => {
+                      return after;
+                    })
+                  );
+                  this.forceUpdate();
+                }}>
+                <h6>{'Huh.'}</h6>
+              </button>
+            )}
+          </Fetch>
+          <Fetch
+            url={`http://localhost:5000/platytude/${this.state.data.id}`}
+            method="PUT"
+            headers={{ 'Content-Type': 'application/json' }}>
+            {({ fetching, failed, doFetch }) => (
+              <button
+                className='btn btn--pilled btn-tiny plat-btn'
+                onClick={() => {
+                  const body = JSON.stringify(this.resetPlatytude(this.state.data));
+                  doFetch({ body }).then(after =>
+                    this.setState(prev => {
+                      return after;
+                    })
+                  );
+                  this.forceUpdate();
+                }}>
+                <h6>{'Why?'}</h6>
+              </button>
+            )}
+          </Fetch>
         </span>
       </div>
     );

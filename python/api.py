@@ -12,7 +12,7 @@ CORS(app)
 def connect_db(db, collection):
     client = pymongo.MongoClient(
         # TODO:  STORE CREDENTIALS SECURELY, AND NEVER COMMIT THEM
-        "mongodb+srv://<NICE-TRY>:<HAHA-NOPE>@platy-store-rh5wf.gcp.mongodb.net/test?retryWrites=true&w=majority"
+        "mongodb+srv://<haha>:<nope>@platy-store-rh5wf.gcp.mongodb.net/test?retryWrites=true&w=majority"
     )
     return client[db][collection]
 
@@ -22,7 +22,7 @@ def to_dict(platytude):
         "sender": platytude["sender"],
         "plat_text": platytude["plat_text"],
         "score": platytude["score"],
-        "xforms": platytude["xforms"]
+        "original_text": platytude["original_text"]
     }
 
 def to_json(platytude):
@@ -57,8 +57,9 @@ def all_platytudes():
 def single_platytude():
     if request.method == 'POST':
         data = request.get_json()
+        print(f"DATA: {data}");
         data["score"] = 0
-        data["xforms"] = []
+        data["original_text"] = data["plat_text"]
         return add_new_platytude(data)
 
 @app.route("/platytude/<plat_id>", methods=['GET', 'PUT'])

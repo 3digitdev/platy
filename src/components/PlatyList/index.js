@@ -32,11 +32,11 @@ class PlatyList extends Component {
         <div></div>
       );
     const filterText = (hasFilter ? this.state.filterName : 'None');
+    const filterFn = (hasFilter ? x => x.sender === this.state.filterName : x => x);
 
     return (
       <Fetch url='http://localhost:5000/platytudes'>
         {({ fetching, failed, data }) => {
-          console.log(fetching, failed, data)
           if (fetching) {
             return (
               <div className='row'>
@@ -57,7 +57,7 @@ class PlatyList extends Component {
           }
           if (data) {
             return (
-              <div>
+              <div className='row'>
                 <div className='row'>
                   <div className='filter col-12 inline'>
                     <h6 className='inline'>{'Active Filter: '}<span className='filter-txt'>{filterText}</span></h6>
@@ -66,12 +66,10 @@ class PlatyList extends Component {
                 </div>
                 <div className='row'>
                   <div className='PlatyList col-12'>
-                    {data.map(p => (
+                    {data.filter(filterFn).map((p, i) => (
                       <Platytude
                         key={p.id}
-                        sender={p.sender}
-                        text={p.plat_text}
-                        score={p.score}
+                        platytude={p}
                         setFilterCb={() => this.setFilter(p.sender)}
                       />
                     ))}
