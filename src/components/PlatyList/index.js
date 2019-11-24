@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { Fetch } from 'react-request';
 import Platytude from '../Platytude';
 import './PlatyList.css';
-
 
 class PlatyList extends Component {
   constructor(props) {
@@ -11,7 +11,6 @@ class PlatyList extends Component {
     };
     this.setFilter = this.setFilter.bind(this);
     this.clearFilter = this.clearFilter.bind(this);
-    // this.renderFilter = this.renderFilter.bind(this);
   }
 
   setFilter(name) {
@@ -24,14 +23,6 @@ class PlatyList extends Component {
   }
 
   render() {
-    const platytudes = this.props.platys.map((p, i) => (
-      <Platytude
-        key={i}
-        sender={p.sender}
-        text={p.text}
-        setFilterCb={() => this.setFilter(p.sender)}
-      />
-    ));
     const hasFilter = this.state.filterName !== '';
     const clearFilterBtn = (
       hasFilter ?
@@ -43,19 +34,55 @@ class PlatyList extends Component {
     const filterText = (hasFilter ? this.state.filterName : 'None');
 
     return (
-      <div>
-        <div className='row'>
-          <div className='filter col-12 inline'>
-            <h6 className='inline'>{'Active Filter: '}<span className='filter-txt'>{filterText}</span></h6>
-            {clearFilterBtn}
-          </div>
-        </div>
-        <div className='row'>
-          <div className='PlatyList col-12'>
-            { platytudes }
-          </div>
-        </div>
-      </div>
+      <Fetch url='http://localhost:5000/platytudes'>
+        {({ fetching, failed, data }) => {
+          console.log(fetching, failed, data)
+          if (fetching) {
+            return (
+              <div className='row'>
+                <div className='filter col-12'>
+                  <h6>{'Loading...'}</h6>
+                </div>
+              </div>
+            );
+          }
+          if (failed) {
+            return (
+              <div className='row'>
+                <div className='filter col-12'>
+                  <h6>{'ERROR!'}</h6>
+                </div>
+              </div>
+            );
+          }
+          if (data) {
+            return (
+              <div>
+                <div className='row'>
+                  <div className='filter col-12 inline'>
+                    <h6 className='inline'>{'Active Filter: '}<span className='filter-txt'>{filterText}</span></h6>
+                    {clearFilterBtn}
+                  </div>
+                </div>
+                <div className='row'>
+                  <div className='PlatyList col-12'>
+                    {data.map(p => (
+                      <Platytude
+                        key={p.id}
+                        sender={p.sender}
+                        text={p.plat_text}
+                        score={p.score}
+                        setFilterCb={() => this.setFilter(p.sender)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          return null;
+        }}
+      </Fetch>
     );
   }
 }

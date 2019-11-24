@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import icon from '../../platypus.svg';
-import Button from '../Button';
 import './Header.css';
 
 class Header extends Component {
@@ -24,7 +23,9 @@ class Header extends Component {
           </div>
           <div className="filter"><h6>{this.state.filterName}</h6></div>
           <a className='add-btn' href='#AddPlatytudeModal'>
-            <Button text="Add a 'tude" />
+            <button className='btn btn--pilled'>
+              <h6>{"Add a 'tude"}</h6>
+            </button>
           </a>
         </div>
       </div>
