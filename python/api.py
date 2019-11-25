@@ -3,20 +3,42 @@ import json
 
 from bson.objectid import ObjectId
 from flask import Flask, request
-from flask_cors import CORS
+from jsonschema import Draft7Validator
+from jsonschema.exceptions import ValidationError
 
 app = Flask("platy")
-# TODO: REMOVE THIS
+# --- TODO: REMOVE THIS --- #
+from flask_cors import CORS
 CORS(app)
+# ------------------------- #
 
-def connect_db(db, collection):
-    client = pymongo.MongoClient(
-        # TODO:  STORE CREDENTIALS SECURELY, AND NEVER COMMIT THEM
-        "mongodb+srv://<haha>:<nope>@platy-store-rh5wf.gcp.mongodb.net/test?retryWrites=true&w=majority"
-    )
-    return client[db][collection]
+PLATYTUDE_SCHEMAS = {
+    "POST": { # Schema for creating Platytudes
+        "$schema": "https://json-schema.org/schema#",
+        "type": "object",
+        "properties": {
+            "sender": { "type": "string" },
+            "plat_text": { "type": "string" },
+            "score": { "type": "number" },
+            "original_text": { "type": "string" }
+        },
+        "required": [ "sender", "plat_text" ]
+    },
+    "PUT": { # Schema for updating Platytudes
+        "$schema": "https://json-schema.org/schema#",
+        "type": "object",
+        "properties": {
+            "sender": { "type": "string" },
+            "plat_text": { "type": "string" },
+            "score": { "type": "number" },
+            "original_text": { "type": "string" }
+        }
+    }
+}
 
+# --- HELPER FUNCTIONS --- #
 def to_dict(platytude):
+    # This is used to properly convert the id from ObjectId
     return {
         "id": str(platytude["_id"]),
         "sender": platytude["sender"],
@@ -27,6 +49,14 @@ def to_dict(platytude):
 
 def to_json(platytude):
     return json.dumps(to_dict(platytude))
+# ------------------------ #
+
+# --- MongoDB FUNCTIONS --- #
+def connect_db(db, collection):
+    client = pymongo.MongoClient(
+        "mongodb+srv://<hah>:<nope>@platy-store-rh5wf.gcp.mongodb.net/test?retryWrites=true&w=majority"
+    )
+    return client[db][collection]
 
 def get_all_platytudes():
     results = [to_dict(p) for p in connect_db("platy", "platytudes").find({})]
@@ -42,30 +72,53 @@ def update_platytude(id, modification):
     return connect_db(
         "platy", "platytudes"
     ).update_one(
-        { '_id': ObjectId(id) }, { "$set": modification }, upsert=False
+        { "_id": ObjectId(id) }, { "$set": modification }, upsert=False
     ).acknowledged
 
 def add_new_platytude(platytude):
     return json.dumps({ "id": str(connect_db("platy", "platytudes").insert_one(platytude).inserted_id) })
+# ------------------------- #
 
-@app.route("/platytudes", methods=['GET'])
+
+# GET all Platytudes
+@app.route("/platytudes", methods=["GET"])
 def all_platytudes():
-    if request.method == 'GET':
+    if request.method == "GET":
         return get_all_platytudes()
 
-@app.route("/platytude", methods=['POST'])
+# POST create of a new Platytude
+# Requires JSON body:
+# { "sender": string, "plat_text": string }
+# Will override attempts to set any other fields
+@app.route("/platytude", methods=["POST"])
 def single_platytude():
-    if request.method == 'POST':
+    if request.method == "POST":
         data = request.get_json()
-        print(f"DATA: {data}");
-        data["score"] = 0
-        data["original_text"] = data["plat_text"]
-        return add_new_platytude(data)
+        validator = Draft7Validator(PLATYTUDE_SCHEMAS[request.method])
+        try:
+            validator.validate(data)
+            data["score"] = 0
+            data["original_text"] = data["plat_text"]
+            return add_new_platytude(data)
+        except ValidationError: # Incoming JSON body didn't match schema
+            errors = [err.message for err in sorted(validator.iter_errors(data), key=str)]
+            return app.make_response((errors, 400))
 
-@app.route("/platytude/<plat_id>", methods=['GET', 'PUT'])
+
+# GET/PUT for dealing with singular Platytudes
+# PUT JSON body can be used to change the following:
+#    sender, plat_text, score
+@app.route("/platytude/<plat_id>", methods=["GET", "PUT"])
 def platytude_by_id(plat_id):
-    if request.method == 'GET':
+    if request.method == "GET":
         return get_by_id(plat_id)
-    elif request.method == 'PUT':
-        if (update_platytude(plat_id, request.get_json())):
-            return get_by_id(plat_id)
+    elif request.method == "PUT":
+        data = request.get_json()
+        validator = Draft7Validator(PLATYTUDE_SCHEMAS[request.method])
+        try:
+            validator.validate(data)
+            if (update_platytude(plat_id, data)):
+                return get_by_id(plat_id)
+        except ValidationError:
+            errors = [err.message for err in sorted(validator.iter_errors(data), key=str)]
+            return app.make_response((errors, 400))
