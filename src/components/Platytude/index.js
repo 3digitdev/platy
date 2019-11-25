@@ -43,6 +43,8 @@ class Platytude extends Component {
     this.transposePlatytude = this.transposePlatytude.bind(this);
     this.incrementScore = this.incrementScore.bind(this);
     this.resetPlatytude = this.resetPlatytude.bind(this);
+    this.clickFn = this.clickFn.bind(this);
+    this.renderPlatBtns = this.renderPlatBtns.bind(this);
   }
 
   transposePlatytude(platytude) {
@@ -56,6 +58,37 @@ class Platytude extends Component {
 
   resetPlatytude(platytude) {
     return { score: 0, plat_text: platytude.original_text };
+  }
+
+  clickFn(doFetch, innerFn) {
+    const body = JSON.stringify(innerFn(this.state.data));
+    doFetch({ body }).then(after =>
+      this.setState(prev => {
+        return after;
+      })
+    );
+    this.forceUpdate();
+  }
+
+  renderPlatBtns() {
+    return [
+      { innerFn: this.transposePlatytude, text: 'Yup!' },
+      { innerFn: this.incrementScore, text: 'Huh.' },
+      { innerFn: this.resetPlatytude, text: 'Why?' }
+    ].map(({ innerFn, text }) => (
+      <Fetch
+        url={`http://localhost:5000/platytude/${this.state.data.id}`}
+        method="PUT"
+        headers={{ 'Content-Type': 'application/json' }}>
+        {({ fetching, failed, doFetch }) =>
+          <button
+            className='btn btn--pilled btn-tiny plat-btn'
+            onClick={() => this.clickFn(doFetch, innerFn)}>
+            <h6>{text}</h6>
+          </button>
+        }
+      </Fetch>
+    ));
   }
 
   render() {
@@ -75,66 +108,7 @@ class Platytude extends Component {
           <span className='info'><strong>{'Posted:  '}</strong><em>{'When they felt like it'}</em></span>
         </div>
         <span className='u-no-margin'>
-          <Fetch
-            url={`http://localhost:5000/platytude/${this.state.data.id}`}
-            method="PUT"
-            headers={{ 'Content-Type': 'application/json' }}>
-            {({ fetching, failed, doFetch }) =>
-              <button
-                className='btn btn--pilled btn-tiny plat-btn'
-                onClick={() => {
-                  const body = JSON.stringify(this.transposePlatytude(this.state.data));
-                  doFetch({ body }).then(after =>
-                    this.setState(prev => {
-                      return after;
-                    })
-                  );
-                  this.forceUpdate();
-                }}>
-                <h6>{'Yup!'}</h6>
-              </button>
-            }
-          </Fetch>
-          <Fetch
-            url={`http://localhost:5000/platytude/${this.state.data.id}`}
-            method="PUT"
-            headers={{ 'Content-Type': 'application/json' }}>
-            {({ fetching, failed, doFetch }) => (
-              <button
-                className='btn btn--pilled btn-tiny plat-btn'
-                onClick={() => {
-                  const body = JSON.stringify(this.incrementScore(this.state.data));
-                  doFetch({ body }).then(after =>
-                    this.setState(prev => {
-                      return after;
-                    })
-                  );
-                  this.forceUpdate();
-                }}>
-                <h6>{'Huh.'}</h6>
-              </button>
-            )}
-          </Fetch>
-          <Fetch
-            url={`http://localhost:5000/platytude/${this.state.data.id}`}
-            method="PUT"
-            headers={{ 'Content-Type': 'application/json' }}>
-            {({ fetching, failed, doFetch }) => (
-              <button
-                className='btn btn--pilled btn-tiny plat-btn'
-                onClick={() => {
-                  const body = JSON.stringify(this.resetPlatytude(this.state.data));
-                  doFetch({ body }).then(after =>
-                    this.setState(prev => {
-                      return after;
-                    })
-                  );
-                  this.forceUpdate();
-                }}>
-                <h6>{'Why?'}</h6>
-              </button>
-            )}
-          </Fetch>
+          {this.renderPlatBtns()}
         </span>
       </div>
     );

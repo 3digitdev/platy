@@ -21,11 +21,9 @@ class AddModal extends Component {
 
   render() {
     return (
-      <Fetch
-        url="http://localhost:5000/platytude"
-        method="POST"
-        headers={{ 'Content-Type': 'application/json' }}
-        >
+      <Fetch url="http://localhost:5000/platytude"
+             method="POST"
+             headers={{ 'Content-Type': 'application/json' }}>
         {({ fetching, failed, doFetch }) => (
           <div className="AddModal modal modal-large" id="AddPlatytudeModal">
             <a href="#DONTMOVE" className="modal-overlay close-btn" aria-label="Close"></a>

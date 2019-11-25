@@ -33,34 +33,34 @@ class PlatyList extends Component {
       );
     const filterText = (hasFilter ? this.state.filterName : 'None');
     const filterFn = (hasFilter ? x => x.sender === this.state.filterName : x => x);
+    const nonSuccessMsg = (text) => (
+      <div className='row'>
+        <div className='filter col-12'>
+          <h6>{text}</h6>
+        </div>
+      </div>
+    )
 
     return (
-      <Fetch url='http://localhost:5000/platytudes'>
+      <Fetch url='http://localhost:5000/platytudes' method="GET">
         {({ fetching, failed, data }) => {
           if (fetching) {
-            return (
-              <div className='row'>
-                <div className='filter col-12'>
-                  <h6>{'Loading...'}</h6>
-                </div>
-              </div>
-            );
+            return nonSuccessMsg('Loading...');
           }
           if (failed) {
-            return (
-              <div className='row'>
-                <div className='filter col-12'>
-                  <h6>{'ERROR!'}</h6>
-                </div>
-              </div>
-            );
+            return nonSuccessMsg('ERROR!');
           }
           if (data) {
             return (
               <div className='row'>
                 <div className='row'>
                   <div className='filter col-12 inline'>
-                    <h6 className='inline'>{'Active Filter: '}<span className='filter-txt'>{filterText}</span></h6>
+                    <h6 className='inline'>
+                      {'Active Filter: '}
+                      <span className='filter-txt'>
+                        {filterText}
+                      </span>
+                    </h6>
                     {clearFilterBtn}
                   </div>
                 </div>
