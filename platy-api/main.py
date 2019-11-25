@@ -7,7 +7,10 @@ from flask import Flask, request
 from jsonschema import Draft7Validator
 from jsonschema.exceptions import ValidationError
 
-app = Flask("platy")
+app = Flask("platy-api")
+app.config.from_mapping(
+    SECRET_KEY=os.environ["FLASK_SECRET"]
+)
 
 MONGO_USER = os.environ['PLATY_MONGO_USER']
 MONGO_PASS = os.environ['PLATY_MONGO_PASS']

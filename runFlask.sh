@@ -1,5 +1,5 @@
 #!/bin/bash
 source venv/bin/activate
-cd python
-export FLASK_APP=api.py
+cd platy-api
+export FLASK_APP=main.py
 flask run
