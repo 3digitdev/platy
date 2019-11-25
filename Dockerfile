@@ -4,9 +4,11 @@ FROM python:3.6.9
 
 WORKDIR /usr/src/app
 
+# Installation
+COPY python/api.py .
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY python/api.py .
-
-CMD [ "python", "./api.py" ]
+# Setup the Flask API
+CMD [ "export", "FLASK_APP=api.py" ]
+CMD [ "flask", "run" ]

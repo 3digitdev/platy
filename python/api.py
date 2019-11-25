@@ -1,5 +1,6 @@
 import pymongo
 import json
+import os
 
 from bson.objectid import ObjectId
 from flask import Flask, request
@@ -7,11 +8,9 @@ from jsonschema import Draft7Validator
 from jsonschema.exceptions import ValidationError
 
 app = Flask("platy")
-# --- TODO: REMOVE THIS --- #
-from flask_cors import CORS
-CORS(app)
-# ------------------------- #
 
+MONGO_USER = os.environ['PLATY_MONGO_USER']
+MONGO_PASS = os.environ['PLATY_MONGO_PASS']
 PLATYTUDE_SCHEMAS = {
     "POST": { # Schema for creating Platytudes
         "$schema": "https://json-schema.org/schema#",
@@ -54,7 +53,7 @@ def to_json(platytude):
 # --- MongoDB FUNCTIONS --- #
 def connect_db(db, collection):
     client = pymongo.MongoClient(
-        "mongodb+srv://<hah>:<nope>@platy-store-rh5wf.gcp.mongodb.net/test?retryWrites=true&w=majority"
+        f"mongodb+srv://{MONGO_USER}:{MONGO_PASS}@platy-store-rh5wf.gcp.mongodb.net/test?retryWrites=true&w=majority"
     )
     return client[db][collection]
 
