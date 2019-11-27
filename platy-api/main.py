@@ -4,13 +4,17 @@ import os
 
 from bson.objectid import ObjectId
 from flask import Flask, request
+from flask_cors import CORS, cross_origin
 from jsonschema import Draft7Validator
 from jsonschema.exceptions import ValidationError
 
 app = Flask("platy-api")
 app.config.from_mapping(
-    SECRET_KEY=os.environ["FLASK_SECRET"]
+    SECRET_KEY=os.environ["FLASK_SECRET"],
+    CORS_HEADERS='Content-Type'
 )
+CORS(app)
+
 
 MONGO_USER = os.environ['PLATY_MONGO_USER']
 MONGO_PASS = os.environ['PLATY_MONGO_PASS']
@@ -84,6 +88,7 @@ def add_new_platytude(platytude):
 
 # GET all Platytudes
 @app.route("/platytudes", methods=["GET"])
+# @cross_origin
 def all_platytudes():
     if request.method == "GET":
         return get_all_platytudes()
@@ -93,6 +98,7 @@ def all_platytudes():
 # { "sender": string, "plat_text": string }
 # Will override attempts to set any other fields
 @app.route("/platytude", methods=["POST"])
+# @cross_origin
 def single_platytude():
     if request.method == "POST":
         data = request.get_json()
@@ -111,6 +117,7 @@ def single_platytude():
 # PUT JSON body can be used to change the following:
 #    sender, plat_text, score
 @app.route("/platytude/<plat_id>", methods=["GET", "PUT"])
+# @cross_origin
 def platytude_by_id(plat_id):
     if request.method == "GET":
         return get_by_id(plat_id)

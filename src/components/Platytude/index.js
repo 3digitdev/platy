@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Fetch } from 'react-request';
-import Composer from 'react-composer';
 import platypus from '../../platypus.svg';
 import './Platytude.css';
+const { API_URL } = require('../../constants');
 
 // Helper functions
 
@@ -77,7 +77,7 @@ class Platytude extends Component {
       { innerFn: this.resetPlatytude, text: 'Why?' }
     ].map(({ innerFn, text }) => (
       <Fetch
-        url={`http://localhost:5000/platytude/${this.state.data.id}`}
+        url={`${API_URL}/platytude/${this.state.data.id}`}
         method="PUT"
         headers={{ 'Content-Type': 'application/json' }}>
         {({ fetching, failed, doFetch }) =>

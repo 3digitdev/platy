@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Fetch } from 'react-request';
+import { API_URL } from '../../constants';
 import Platytude from '../Platytude';
 import './PlatyList.css';
 
@@ -42,7 +43,7 @@ class PlatyList extends Component {
     )
 
     return (
-      <Fetch url='http://localhost:5000/platytudes' method="GET">
+      <Fetch url={`${API_URL}/platytudes`} method="GET">
         {({ fetching, failed, data }) => {
           if (fetching) {
             return nonSuccessMsg('Loading...');

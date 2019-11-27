@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Fetch } from 'react-request';
+import { API_URL } from '../../constants';
 import './AddModal.css';
 
 class AddModal extends Component {
@@ -21,7 +22,7 @@ class AddModal extends Component {
 
   render() {
     return (
-      <Fetch url="http://localhost:5000/platytude"
+      <Fetch url={`${API_URL}/platytude`}
              method="POST"
              headers={{ 'Content-Type': 'application/json' }}>
         {({ fetching, failed, doFetch }) => (

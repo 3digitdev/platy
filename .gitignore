@@ -198,4 +198,8 @@ dmypy.json
 
 # --- EXTRAS --- #
 runFlash.sh
+
+# firebase stuff
+.firebase/
+.firebaserc
 # -------------- #
